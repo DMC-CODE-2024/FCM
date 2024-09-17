@@ -1,0 +1,83 @@
+------------eir-pm-1.0.0.1 (Release Notes)
+
+1. FCM Creation of file from history table
+2. Sending File information by calling URL
+3. Oracle Support Added
+
+DB change : 
+
+insert into sys_param(tag,value,feature_name) values  ('NO_OF_OPERATORS','1','FileCreation');
+insert into sys_param(tag,value,feature_name)  values  ('OPERATORS_1','AIRTEL','FileCreation');
+insert into sys_param(tag,value,feature_name)  values  ('AIRTEL_SOURCE_SERVER','127.0.0.1','FileCreation');
+insert into sys_param(tag,value,feature_name)  values  ('AIRTEL_DEST_FILE_PATH','/home/ere/ere','FileCreation');
+insert into sys_param(tag,value,feature_name)  values  ('AIRTEL_DEST_SERVER','127.0.0.1','FileCreation');
+insert into sys_param(tag,value,feature_name)  values  ('AIRTEL_SFTP_URL','http://159.223.159.153:9504/eirs/fileCopyApi','FileCreation');
+
+
+application.yml : 
+
+spring:
+#  datasource:
+#    url: jdbc:mysql://127.0.0.1:3306/app
+#    username: root
+#    password: ENC(jxNzi7e8T94AnHUxgizmuQ==)
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+  datasource:
+    url: jdbc:oracle:thin:@64.227.137.112:1521/ORCLPDB1
+    username: CRESTELCEIR
+    password: CRESTELCEIR123#
+    driverClassName: oracle.jdbc.driver.OracleDriver
+  jpa:
+    #properties:
+    hibernate:
+      ddl-auto: none
+#      dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+      dialect: org.hibernate.dialect.Oracle10gDialect
+      show-sql: true
+scheduler:
+  daily:
+#    cronjob: "0 0 1 * * *"
+    cronjob: "*/4 * * * * *"
+    # SECOND, MIN , HOUR , DAY(Month) , Month , DAY (Week) 1-Monday and 7-Sunday
+  weekly:
+#    cronjob: "0 0 1 * * 1"
+    cronjob: "30 * * * * *"
+
+
+files:
+  types:
+    blocked-list:
+      filename-prefix: BLOCKEDLIST
+      incremental: true
+      full: true
+    exception-list:
+      filename-prefix: EXCEPTIONLIST
+      incremental: true
+      full: true
+    tracked-list:
+      filename-prefix: TRACKEDLIST
+      incremental: true
+      full: true
+    blocked-tac-list:
+      filename-prefix: BLOCKEDTACLIST
+      incremental: true
+      full: true
+    allowed-tac-list:
+      filename-prefix: ALLOWEDTACLIST
+      incremental: true
+      full: true
+  path: E:/Files
+
+alerts:
+  postUrl: http://10.100.2.231:9504/eirs/alert
+  processId: FileCreation
+  alerts-mapping:
+    CORE_MODULE_URL_CALL_EXCEPTION:
+      alertId: ALERT1001
+      message: "Not able to call CORE Module, <URL> : <EXCEPTION>."
+
+jasypt:
+  encryptor:
+    password: eir
+    algorithm: PBEWithMD5AndDES
+    iv-generator-classname: org.jasypt.iv.NoIvGenerator
