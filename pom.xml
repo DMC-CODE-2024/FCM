@@ -9,8 +9,8 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.eirs</groupId>
-    <artifactId>eirs-fcm</artifactId>
-    <version>1.0.0.1</version>
+    <artifactId>fcm</artifactId>
+    <version>1.0.0</version>
     <name>file-creation-module</name>
     <description>File Creation Module</description>
     <properties>
@@ -70,6 +70,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <version>1.18.30</version>
             <optional>true</optional>
         </dependency>
         <dependency>

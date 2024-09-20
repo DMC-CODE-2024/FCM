@@ -1,6 +1,7 @@
 package com.eirs.fcm.service;
 
 import com.eirs.fcm.alert.AlertConfig;
+import com.eirs.fcm.config.AppConfig;
 import com.eirs.fcm.repository.ConfigRepository;
 import com.eirs.fcm.repository.entity.SystemConfig;
 import com.eirs.fcm.repository.entity.SystemConfigKeys;
@@ -23,7 +24,7 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
     private ConfigRepository repository;
 
     @Autowired
-    private AlertConfig alertConfig;
+    private AppConfig appConfig;
     List<String> eirInstances = new ArrayList<>();
 
     Map<String, String> shortCodeWithOperatorMap = new HashMap<>();
@@ -56,7 +57,7 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
     }
 
     public String findByKey(String key) throws RuntimeException {
-        Optional<SystemConfig> optional = repository.findByConfigKeyAndModule(key, alertConfig.getProcessId());
+        Optional<SystemConfig> optional = repository.findByConfigKeyAndModule(key, appConfig.getModuleName());
         if (optional.isPresent()) {
             log.info("Filled key:{} value:{}", key, optional.get().getConfigValue());
             return optional.get().getConfigValue();
