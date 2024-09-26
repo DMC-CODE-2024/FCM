@@ -1,5 +1,6 @@
 package com.eirs.fcm.alert;
 
+import com.eirs.fcm.config.AppConfig;
 import com.eirs.fcm.constants.AlertIds;
 import com.eirs.fcm.constants.AlertMessagePlaceholders;
 import jakarta.annotation.PostConstruct;
@@ -31,6 +32,8 @@ public class AlertServiceImpl implements AlertService {
     AlertRequestMapper mapper;
     @Autowired
     AlertConfig alertConfig;
+    @Autowired
+    AppConfig appConfig;
 
     @PostConstruct
     public void init() {
@@ -55,7 +58,7 @@ public class AlertServiceImpl implements AlertService {
             log.error("Message not configured for AlertId:{}", alertIds);
         } else {
             String alertId = configDto.getAlertId();
-            putToQueue(AlertDto.builder().alertId(alertId).placeHolderMap(placeHolderMap).alertProcess(alertConfig.getProcessId()).build());
+            putToQueue(AlertDto.builder().alertId(alertId).placeHolderMap(placeHolderMap).alertProcess(appConfig.getModuleName()).build());
         }
     }
 

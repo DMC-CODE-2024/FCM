@@ -1,6 +1,7 @@
 package com.eirs.fcm.service;
 
 import com.eirs.fcm.alert.AlertService;
+import com.eirs.fcm.config.AppConfig;
 import com.eirs.fcm.constants.AlertIds;
 import com.eirs.fcm.constants.AlertMessagePlaceholders;
 import com.eirs.fcm.constants.ListType;
@@ -20,13 +21,18 @@ public class ModuleAlertService {
     @Autowired
     AlertService alertService;
 
+    @Autowired
+    AppConfig appConfig;
+
     public void sendAlert(AlertIds alertIds, Map<AlertMessagePlaceholders, String> placeHolderMap) {
+        placeHolderMap.put(AlertMessagePlaceholders.FEATURE_NAME, appConfig.getModuleName());
         alertService.sendAlert(alertIds, placeHolderMap);
     }
 
     public void sendDatabaseAlert(String exception, ListType listIdentity) {
         Map<AlertMessagePlaceholders, String> map = new HashMap<>();
         map.put(AlertMessagePlaceholders.EXCEPTION, exception);
+        map.put(AlertMessagePlaceholders.FEATURE_NAME, appConfig.getModuleName());
         map.put(AlertMessagePlaceholders.LIST, listIdentity.name());
         alertService.sendAlert(AlertIds.DATABASE_EXCEPTION, map);
     }
@@ -34,12 +40,14 @@ public class ModuleAlertService {
     public void sendConfigurationMissingAlert(String configKey) {
         Map<AlertMessagePlaceholders, String> map = new HashMap<>();
         map.put(AlertMessagePlaceholders.CONFIG_KEY, configKey);
+        map.put(AlertMessagePlaceholders.FEATURE_NAME, appConfig.getModuleName());
         alertService.sendAlert(AlertIds.CONFIGURATION_VALUE_MISSING, map);
     }
 
     public void sendConfigurationWrongValueAlert(String configKey, String configValue) {
         Map<AlertMessagePlaceholders, String> map = new HashMap<>();
         map.put(AlertMessagePlaceholders.CONFIG_KEY, configKey);
+        map.put(AlertMessagePlaceholders.FEATURE_NAME, appConfig.getModuleName());
         map.put(AlertMessagePlaceholders.CONFIG_VALUE, configValue);
         alertService.sendAlert(AlertIds.CONFIGURATION_VALUE_WRONG, map);
     }

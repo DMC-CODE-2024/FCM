@@ -3,8 +3,11 @@ package com.eirs.fcm.client;
 import com.eirs.fcm.alert.AlertConfig;
 import com.eirs.fcm.client.dto.SftpDestinationDto;
 import com.eirs.fcm.client.dto.SftpFileDto;
-import com.eirs.fcm.constants.*;
-import com.eirs.fcm.repository.ListFileManagementRepository;
+import com.eirs.fcm.config.AppConfig;
+import com.eirs.fcm.constants.AlertIds;
+import com.eirs.fcm.constants.AlertMessagePlaceholders;
+import com.eirs.fcm.constants.CopyStatus;
+import com.eirs.fcm.constants.FileType;
 import com.eirs.fcm.repository.entity.ListFileManagement;
 import com.eirs.fcm.repository.entity.SystemConfigKeys;
 import com.eirs.fcm.service.ListFileManagementService;
@@ -15,7 +18,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -36,9 +42,6 @@ public class SftpFileService {
     SystemConfigurationService systemConfigurationService;
 
     @Autowired
-    AlertConfig alertConfig;
-
-    @Autowired
     RestTemplate restTemplate;
 
     @Autowired
@@ -50,6 +53,9 @@ public class SftpFileService {
 
     @Value("${sftp.copy-url.retry-time-in-min:1}")
     private Integer sftpUrlRetryTime;
+
+    @Autowired
+    AppConfig appConfig;
 
     @PostConstruct
     public void init() {
@@ -89,7 +95,7 @@ public class SftpFileService {
             SftpFileDto sftpFileDto = SftpFileDto.builder()
                     .txnId(String.valueOf(listFileManagement.getId()))
                     .sourceFileName(listFileManagement.getFileName())
-                    .applicationName(alertConfig.getProcessId())
+                    .applicationName(appConfig.getModuleName())
                     .destination(Collections.singletonList(destinationDto))
                     .sourceFilePath(listFileManagement.getFilePath())
                     .serverName(serverName)
@@ -122,7 +128,7 @@ public class SftpFileService {
                     SftpFileDto sftpFileDto = SftpFileDto.builder()
                             .txnId(String.valueOf(listFileManagement.getId()))
                             .sourceFileName(listFileManagement.getFileName())
-                            .applicationName(alertConfig.getProcessId())
+                            .applicationName(appConfig.getModuleName())
                             .destination(Collections.singletonList(destinationDto))
                             .sourceFilePath(listFileManagement.getFilePath())
                             .serverName(serverName)
