@@ -10,8 +10,8 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class AppConfig {
 
-    @Value("${module-name}")
-    private String moduleName;
+    @Value("${feature-name}")
+    private String featureName;
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();

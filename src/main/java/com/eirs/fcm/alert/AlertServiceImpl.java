@@ -58,7 +58,7 @@ public class AlertServiceImpl implements AlertService {
             log.error("Message not configured for AlertId:{}", alertIds);
         } else {
             String alertId = configDto.getAlertId();
-            putToQueue(AlertDto.builder().alertId(alertId).placeHolderMap(placeHolderMap).alertProcess(appConfig.getModuleName()).build());
+            putToQueue(AlertDto.builder().alertId(alertId).placeHolderMap(placeHolderMap).alertProcess(appConfig.getFeatureName()).build());
         }
     }
 

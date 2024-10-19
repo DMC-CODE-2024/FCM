@@ -1,6 +1,5 @@
 package com.eirs.fcm.service;
 
-import com.eirs.fcm.alert.AlertConfig;
 import com.eirs.fcm.config.AppConfig;
 import com.eirs.fcm.repository.ConfigRepository;
 import com.eirs.fcm.repository.entity.SystemConfig;
@@ -57,7 +56,7 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
     }
 
     public String findByKey(String key) throws RuntimeException {
-        Optional<SystemConfig> optional = repository.findByConfigKeyAndModule(key, appConfig.getModuleName());
+        Optional<SystemConfig> optional = repository.findByConfigKey(key);
         if (optional.isPresent()) {
             log.info("Filled key:{} value:{}", key, optional.get().getConfigValue());
             return optional.get().getConfigValue();

@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.eirs</groupId>
-    <artifactId>fcm</artifactId>
+    <artifactId>eir_file_creation</artifactId>
     <version>1.0.0</version>
-    <name>file-creation-module</name>
+    <name>eir_file_creation</name>
     <description>File Creation Module</description>
     <properties>
         <java.version>17</java.version>
