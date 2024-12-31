@@ -70,10 +70,10 @@ public class Writter {
                 filename = filePrefix + "_INCREMENTAL_" + endDate.format(DateFormatterConstants.fileSuffixDateFormat);
             }
             case WEEKLY_FULL -> {
-                filename = filePrefix + "_FULL_" + fileType.getValue().toUpperCase() + "_" + endDate.format(DateFormatterConstants.fileSuffixDateFormat);
+                filename = filePrefix + "_FULL_" + fileType.getValue().toLowerCase() + "_" + endDate.format(DateFormatterConstants.fileSuffixDateFormat);
             }
             case WEEKLY_INCREMENTAL -> {
-                filename = filePrefix + "_INCREMENTAL_" + fileType.getValue().toUpperCase() + "_" + endDate.format(DateFormatterConstants.fileSuffixDateFormat);
+                filename = filePrefix + "_INCREMENTAL_" + fileType.getValue().toLowerCase() + "_" + endDate.format(DateFormatterConstants.fileSuffixDateFormat);
             }
         }
         return filename + ".csv";
