@@ -94,7 +94,7 @@ public class BlockedTacWriter extends Writter {
                     writer.close();
                 List<String> operators = systemConfigurationService.getOperators();
                 for (String operator : operators) {
-                    operator = operator.toUpperCase();
+                    operator = operator.toLowerCase();
                     String filepath = filePath + "/" + operator + "/" + fileType.getValue() + "/";
                     createFile(filepath + filename);
                     copyFile(tempFilepath, filepath + filename);
@@ -140,7 +140,7 @@ public class BlockedTacWriter extends Writter {
                     writer.close();
                 List<String> operators = systemConfigurationService.getOperators();
                 for (String operator : operators) {
-                    operator = operator.toUpperCase();
+                    operator = operator.toLowerCase();
                     String filepath = filePath + "/" + operator + "/" + fileType.getValue() + "/";
                     createFile(filepath + filename);
                     copyFile(tempFilepath, filepath + filename);
