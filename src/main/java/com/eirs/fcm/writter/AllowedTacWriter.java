@@ -94,10 +94,12 @@ public class AllowedTacWriter extends Writter {
                     writer.close();
                 List<String> operators = systemConfigurationService.getOperators();
                 for (String operator : operators) {
+                    String shortCode = systemConfigurationService.getShortCode(operator);
+                    String operatorFile = getFilename(startDate, endDate, fileType, filePrefix, shortCode);
                     operator = operator.toLowerCase();
                     String filepath = filePath + "/" + operator + "/" + fileType.getValue() + "/";
                     createFile(filepath + filename);
-                    copyFile(tempFilepath, filepath + filename);
+                    copyFile(tempFilepath, filepath + operatorFile);
                     List<ListFileManagement> listFileManagementList = listFileManagementService.saveListManagement(operator, ListType.ALLOWEDTACLIST, fileType, filepath, filename, atomicLong.get());
                     sftpFileService.sendCopyFileInfo(listFileManagementList);
                 }
@@ -143,10 +145,12 @@ public class AllowedTacWriter extends Writter {
 
                 List<String> operators = systemConfigurationService.getOperators();
                 for (String operator : operators) {
+                    String shortCode = systemConfigurationService.getShortCode(operator);
+                    String operatorFile = getFilename(startDate, endDate, fileType, filePrefix, shortCode);
                     operator = operator.toLowerCase();
                     String filepath = filePath + "/" + operator + "/" + fileType.getValue() + "/";
                     createFile(filepath + filename);
-                    copyFile(tempFilepath, filepath + filename);
+                    copyFile(tempFilepath, filepath + operatorFile);
                     List<ListFileManagement> listFileManagementList = listFileManagementService.saveListManagement(operator, ListType.ALLOWEDTACLIST, fileType, filepath, filename, atomicLong.get());
                     sftpFileService.sendCopyFileInfo(listFileManagementList);
                 }
