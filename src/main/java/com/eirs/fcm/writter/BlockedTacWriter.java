@@ -98,7 +98,7 @@ public class BlockedTacWriter extends Writter {
                     String operatorFile = getFilename(startDate, endDate, fileType, filePrefix, shortCode);
                     operator = operator.toLowerCase();
                     String filepath = filePath + "/" + operator + "/" + fileType.getValue() + "/";
-                    createFile(filepath + filename);
+                    createFile(filepath + operatorFile);
                     copyFile(tempFilepath, filepath + operatorFile);
                     List<ListFileManagement> listFileManagementList = listFileManagementService.saveListManagement(operator, ListType.BLOCKEDTACLIST, fileType, filepath, filename, atomicLong.get());
                     sftpFileService.sendCopyFileInfo(listFileManagementList);
@@ -146,7 +146,7 @@ public class BlockedTacWriter extends Writter {
                     String operatorFile = getFilename(startDate, endDate, fileType, filePrefix, shortCode);
                     operator = operator.toLowerCase();
                     String filepath = filePath + "/" + operator + "/" + fileType.getValue() + "/";
-                    createFile(filepath + filename);
+                    createFile(filepath + operatorFile);
                     copyFile(tempFilepath, filepath + operatorFile);
                     List<ListFileManagement> listFileManagementList = listFileManagementService.saveListManagement(operator, ListType.BLOCKEDTACLIST, fileType, filepath, filename, atomicLong.get());
                     sftpFileService.sendCopyFileInfo(listFileManagementList);
