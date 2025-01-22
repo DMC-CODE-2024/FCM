@@ -32,6 +32,8 @@ public class EagleFileCreationModuleApplication {
         } catch (Exception e) {
             logger.error("Error while running FCM {}", e.getMessage(), e);
         }
+
+        System.exit(0);
     }
 
 }
