@@ -51,4 +51,11 @@ public class ModuleAlertService {
         map.put(AlertMessagePlaceholders.CONFIG_VALUE, configValue);
         alertService.sendAlert(AlertIds.CONFIGURATION_VALUE_WRONG, map);
     }
+
+    public void sendModuleExecutionAlert(String error, String featureName) {
+        Map<AlertMessagePlaceholders, String> map = new HashMap<>();
+        map.put(AlertMessagePlaceholders.EXCEPTION, error);
+        map.put(AlertMessagePlaceholders.FEATURE_NAME, featureName);
+        alertService.sendAlert(AlertIds.MODULE_EXECUTED_WITH_EXCEPTION, map);
+    }
 }
