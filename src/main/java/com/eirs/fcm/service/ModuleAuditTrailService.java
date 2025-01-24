@@ -115,6 +115,7 @@ public class ModuleAuditTrailService {
         updateAuditQuery = updateAuditQuery.replaceAll(AuditQueriesConstant.PARAM_TIME_TAKEN, String.valueOf(moduleAuditTrail.getTimeTaken()))
                 .replaceAll(AuditQueriesConstant.FEATURE_NAME, moduleAuditTrail.getFeatureName())
                 .replaceAll(AuditQueriesConstant.ACTION, moduleAuditTrail.getAction())
+                .replaceAll(AuditQueriesConstant.PARAM_STATUS, moduleAuditTrail.getStatusCode() == 200 ? "Success" : "Fail")
                 .replaceAll(AuditQueriesConstant.PARAM_SUCCESS_COUNT, String.valueOf(moduleAuditTrail.getCount()))
                 .replaceAll(AuditQueriesConstant.PARAM_STATUS_CODE, String.valueOf(moduleAuditTrail.getStatusCode()));
         queryExecutorService.execute(updateAuditQuery);
