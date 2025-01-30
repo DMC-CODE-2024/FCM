@@ -5,8 +5,6 @@ import com.eirs.fcm.constants.AlertIds;
 import com.eirs.fcm.constants.AlertMessagePlaceholders;
 import com.eirs.fcm.constants.FileType;
 import com.eirs.fcm.constants.ListType;
-import com.eirs.fcm.repository.GreylistDeviceHisRepository;
-import com.eirs.fcm.repository.GreylistDeviceRepository;
 import com.eirs.fcm.repository.entity.*;
 import com.eirs.fcm.service.ListFileManagementService;
 import com.eirs.fcm.service.ModuleAlertService;
@@ -17,19 +15,23 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.PrintWriter;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Stream;
 
 
-@Repository
+@Service
 public class TrackedlistDeviceWriter extends Writter {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -49,16 +51,13 @@ public class TrackedlistDeviceWriter extends Writter {
     SftpFileService sftpFileService;
 
     @Autowired
-    private GreylistDeviceHisRepository greylistDeviceHisRepository;
-
-    @Autowired
-    private GreylistDeviceRepository greylistDeviceRepository;
-
-    @Autowired
     ListFileManagementService listFileManagementService;
 
     @Autowired
     ModuleAlertService alertService;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Transactional(readOnly = false)
     public void writeFullData(LocalDateTime startDate, LocalDateTime endDate, FileType fileType) throws Exception {
@@ -80,15 +79,42 @@ public class TrackedlistDeviceWriter extends Writter {
                     writer.println(fullFileHeader);
                     PrintWriter finalWriter = writer;
 
-                    try (Stream<GreylistDevice> stream = greylistDeviceRepository.streamByOperatorNameIgnoreCase(operator)) {
-                        stream.forEach(data -> {
-                            finalWriter.println(data.toCsv());
+                    String query = "SELECT id,actual_imei,imei,imsi,msisdn,operator_id,operator_name,created_on from grey_list where operator_name='" + operator + "'";
+                    log.info("JDBC Template Selecting Records with Query:[{}]", query);
+                    jdbcTemplate.setFetchSize(Integer.MIN_VALUE);
+                    jdbcTemplate.query(query, new RowCallbackHandler() {
+                        @Override
+                        public void processRow(ResultSet rs) throws SQLException {
+                            ListDeviceData recordDataDto = new ListDeviceData();
+                            recordDataDto.setActualImei(rs.getString("actual_imei"));
+                            recordDataDto.setImsi(rs.getString("imsi"));
+                            recordDataDto.setMsisdn(rs.getString("msisdn"));
+                            recordDataDto.setOperatorName(rs.getString("operator_name"));
+                            recordDataDto.setOperatorId(rs.getString("operator_id"));
+                            recordDataDto.setImei(rs.getString("imei"));
+                            recordDataDto.setCreatedOn(rs.getTimestamp("created_on").toLocalDateTime());
+                            finalWriter.println(recordDataDto.toCsv());
                             atomicLong.incrementAndGet();
-                        });
-                    }
-                    greylistDeviceRepository.findByOperatorNameIsNull().forEach(data -> {
-                        finalWriter.println(data.toCsv());
-                        atomicLong.incrementAndGet();
+                        }
+                    });
+
+                    query = "SELECT id,actual_imei,imei,imsi,msisdn,operator_id,operator_name,created_on from grey_list where operator_name is NULL";
+                    log.info("JDBC Template Selecting Records with Query:[{}]", query);
+                    jdbcTemplate.setFetchSize(Integer.MIN_VALUE);
+                    jdbcTemplate.query(query, new RowCallbackHandler() {
+                        @Override
+                        public void processRow(ResultSet rs) throws SQLException {
+                            ListDeviceData recordDataDto = new ListDeviceData();
+                            recordDataDto.setActualImei(rs.getString("actual_imei"));
+                            recordDataDto.setImsi(rs.getString("imsi"));
+                            recordDataDto.setMsisdn(rs.getString("msisdn"));
+                            recordDataDto.setOperatorName(rs.getString("operator_name"));
+                            recordDataDto.setOperatorId(rs.getString("operator_id"));
+                            recordDataDto.setImei(rs.getString("imei"));
+                            recordDataDto.setCreatedOn(rs.getTimestamp("created_on").toLocalDateTime());
+                            finalWriter.println(recordDataDto.toCsv());
+                            atomicLong.incrementAndGet();
+                        }
                     });
                 } catch (DataAccessException e) {
                     alertService.sendDatabaseAlert(e.getMessage(), ListType.TRACKEDLIST);
@@ -129,18 +155,45 @@ public class TrackedlistDeviceWriter extends Writter {
                     writer.println(incrementFileHeader);
                     PrintWriter finalWriter = writer;
 
-                    try (Stream<GreylistDeviceHis> stream = greylistDeviceHisRepository.streamByOperatorNameAndCreatedOnBetween(operator, startDate, endDate)) {
-                        stream.forEach(data -> {
-                            finalWriter.println(data.toCsv());
+                    String query = "SELECT id,actual_imei,imei,imsi,msisdn,operator_id,operator_name,created_on,operation from grey_list_his where created_on >= '" + startDate.format(DateFormatterConstants.simpleDateFormat) + "' and created_on < '" + endDate.format(DateFormatterConstants.simpleDateFormat) + "' and operator_name='" + operator + "'";
+                    log.info("JDBC Template Selecting Records with Query:[{}]", query);
+                    jdbcTemplate.setFetchSize(Integer.MIN_VALUE);
+                    jdbcTemplate.query(query, new RowCallbackHandler() {
+                        @Override
+                        public void processRow(ResultSet rs) throws SQLException {
+                            ListDeviceDataHis recordDataDto = new ListDeviceDataHis();
+                            recordDataDto.setActualImei(rs.getString("actual_imei"));
+                            recordDataDto.setImsi(rs.getString("imsi"));
+                            recordDataDto.setMsisdn(rs.getString("msisdn"));
+                            recordDataDto.setOperatorName(rs.getString("operator_name"));
+                            recordDataDto.setOperatorId(rs.getString("operator_id"));
+                            recordDataDto.setImei(rs.getString("imei"));
+                            recordDataDto.setOperation(rs.getInt("operation"));
+                            recordDataDto.setCreatedOn(rs.getTimestamp("created_on").toLocalDateTime());
+                            finalWriter.println(recordDataDto.toCsv());
                             atomicLong.incrementAndGet();
-                        });
-                    }
-                    try (Stream<GreylistDeviceHis> streamCommon = greylistDeviceHisRepository.streamByCreatedOnBetween(startDate, endDate)) {
-                        streamCommon.forEach(data -> {
-                            finalWriter.println(data.toCsv());
+                        }
+                    });
+
+                    query = "SELECT id,actual_imei,imei,imsi,msisdn,operator_id,operator_name,created_on,operation from grey_list_his where created_on >= '" + startDate.format(DateFormatterConstants.simpleDateFormat) + "' and created_on < '" + endDate.format(DateFormatterConstants.simpleDateFormat) + "' and operator_name is NULL";
+                    log.info("JDBC Template Selecting Records with Query:[{}]", query);
+                    jdbcTemplate.setFetchSize(Integer.MIN_VALUE);
+                    jdbcTemplate.query(query, new RowCallbackHandler() {
+                        @Override
+                        public void processRow(ResultSet rs) throws SQLException {
+                            ListDeviceDataHis recordDataDto = new ListDeviceDataHis();
+                            recordDataDto.setActualImei(rs.getString("actual_imei"));
+                            recordDataDto.setImsi(rs.getString("imsi"));
+                            recordDataDto.setMsisdn(rs.getString("msisdn"));
+                            recordDataDto.setOperatorName(rs.getString("operator_name"));
+                            recordDataDto.setOperatorId(rs.getString("operator_id"));
+                            recordDataDto.setImei(rs.getString("imei"));
+                            recordDataDto.setOperation(rs.getInt("operation"));
+                            recordDataDto.setCreatedOn(rs.getTimestamp("created_on").toLocalDateTime());
+                            finalWriter.println(recordDataDto.toCsv());
                             atomicLong.incrementAndGet();
-                        });
-                    }
+                        }
+                    });
                 } catch (DataAccessException e) {
                     alertService.sendDatabaseAlert(e.getMessage(), ListType.TRACKEDLIST);
                     log.error("Error While getting Data TrackedList Error:{}", e.getMessage(), e);

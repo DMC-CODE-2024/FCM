@@ -1,18 +1,12 @@
 package com.eirs.fcm.repository.entity;
 
-import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Data
-@Entity
-@Table(name = "grey_list")
-public class GreylistDevice implements CsvData {
+public class ListDeviceData implements CsvData {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String actualImei;
