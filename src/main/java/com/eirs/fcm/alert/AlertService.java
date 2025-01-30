@@ -7,5 +7,6 @@ import java.util.Map;
 
 public interface AlertService {
 
+    void sendAlertNow(AlertIds alertIds, Map<AlertMessagePlaceholders, String> placeHolderMap);
     void sendAlert(AlertIds alertIds, Map<AlertMessagePlaceholders, String> placeHolderMap);
 }

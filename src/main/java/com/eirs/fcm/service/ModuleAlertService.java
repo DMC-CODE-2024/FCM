@@ -34,14 +34,14 @@ public class ModuleAlertService {
         map.put(AlertMessagePlaceholders.EXCEPTION, exception);
         map.put(AlertMessagePlaceholders.FEATURE_NAME, appConfig.getFeatureName());
         map.put(AlertMessagePlaceholders.LIST, listIdentity.name());
-        alertService.sendAlert(AlertIds.DATABASE_EXCEPTION, map);
+        alertService.sendAlertNow(AlertIds.DATABASE_EXCEPTION, map);
     }
 
     public void sendConfigurationMissingAlert(String configKey) {
         Map<AlertMessagePlaceholders, String> map = new HashMap<>();
         map.put(AlertMessagePlaceholders.CONFIG_KEY, configKey);
         map.put(AlertMessagePlaceholders.FEATURE_NAME, appConfig.getFeatureName());
-        alertService.sendAlert(AlertIds.CONFIGURATION_VALUE_MISSING, map);
+        alertService.sendAlertNow(AlertIds.CONFIGURATION_VALUE_MISSING, map);
     }
 
     public void sendConfigurationWrongValueAlert(String configKey, String configValue) {
@@ -49,7 +49,7 @@ public class ModuleAlertService {
         map.put(AlertMessagePlaceholders.CONFIG_KEY, configKey);
         map.put(AlertMessagePlaceholders.FEATURE_NAME, appConfig.getFeatureName());
         map.put(AlertMessagePlaceholders.CONFIG_VALUE, configValue);
-        alertService.sendAlert(AlertIds.CONFIGURATION_VALUE_WRONG, map);
+        alertService.sendAlertNow(AlertIds.CONFIGURATION_VALUE_WRONG, map);
     }
 
     public void sendModuleExecutionAlert(String error, String featureName) {

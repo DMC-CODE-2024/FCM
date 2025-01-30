@@ -10,6 +10,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.time.LocalDate;
+import java.util.concurrent.TimeUnit;
 
 @SpringBootApplication
 @EnableScheduling
@@ -33,7 +34,13 @@ public class EagleFileCreationModuleApplication {
             logger.error("Error while running FCM {}", e.getMessage(), e);
         }
 
-        System.exit(0);
+        try {
+            TimeUnit.SECONDS.sleep(1);
+            System.exit(0);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
 }

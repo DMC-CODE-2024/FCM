@@ -33,7 +33,12 @@ public class SystemConfigurationServiceImpl implements SystemConfigurationServic
 
     @PostConstruct
     public void init() {
-        getOperators();
+
+        try {
+            getOperators();
+        } catch (Exception e) {
+            Runtime.getRuntime().halt(1);
+        }
     }
 
     @Override
